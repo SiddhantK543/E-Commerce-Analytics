@@ -1,0 +1,6 @@
+order_id,product_id,rating,sentiment,customer_feedback
+O001,P001,5,Positive,Great sound quality
+O002,P002,2,Negative,Too thin
+O003,P003,3,Neutral,Works fine
+O006,P001,4,Positive,Good value
+O008,P002,5,Positive,Love it

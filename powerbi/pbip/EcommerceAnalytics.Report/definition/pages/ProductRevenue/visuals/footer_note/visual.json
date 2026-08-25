@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "44cff2c6-b187-59f3-9b6a-6929bb77cb90",
+  "position": {
+    "x": 441,
+    "y": 664,
+    "z": 0,
+    "width": 819,
+    "height": 46,
+    "tabOrder": 90
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Synthetic test data (5 customers / 11 orders) - see docs/python_analytics.md for dataset status.",
+                    "textStyle": {
+                      "fontSize": "9",
+                      "fontWeight": "normal",
+                      "color": "#8A8A8A",
+                      "fontStyle": "italic"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

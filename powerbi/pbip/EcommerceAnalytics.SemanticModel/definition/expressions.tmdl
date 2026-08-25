@@ -1,0 +1,5 @@
+expression DataFolderPath = "C:\Users\siddh\Downloads\ecommerce-pbix\data\exports" meta [IsParameterQuery=true, DefaultValueOverridden=false, IsParameterQueryRequired=true, Type="Text"]
+	lineageTag: d1a2b3c4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+
+	annotation PBI_Id = 8f3e2d1c9b7a4f6e8d0c2b4a6e8f0c2d
+

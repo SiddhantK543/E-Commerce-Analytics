@@ -1,0 +1,6 @@
+product_id,product_name,category,brand,product_rating_avg,stock_quantity
+P001,Wireless Headphones,Electronics,SoundCo,4.5,100
+P002,Yoga Mat,Sports,FitPro,4.0,200
+P003,Blender,Home,KitchenPlus,3.2,50
+P004,Running Shoes,Sports,RunFast,4.8,150
+P005,Desk Lamp,Home,BrightHome,2.5,300

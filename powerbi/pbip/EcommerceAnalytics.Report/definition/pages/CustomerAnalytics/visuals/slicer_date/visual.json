@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "7980f30d-ba3f-4868-983e-f5d8c733bd2f",
+  "position": {
+    "x": 20,
+    "y": 640,
+    "z": 0,
+    "width": 195,
+    "height": 70,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "slicer",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "year_month_label"
+                }
+              },
+              "queryRef": "DimDate.year_month_label",
+              "nativeQueryRef": "year_month_label"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {}
+  }
+}

@@ -1,0 +1,297 @@
+table _Measures
+	lineageTag: 50fe7837-6129-49a1-9587-edd4de3b3c50
+
+	measure 'Total Revenue' = SUM(FactOrderItems[total_price_usd])
+		formatString: \$#,##0.00
+		lineageTag: be0fa877-3e83-485b-888e-891808c5b489
+		displayFolder: Sales
+	measure 'Gross Transaction Value' = [Total Revenue]
+		formatString: \$#,##0.00
+		lineageTag: 0e336425-5951-41df-9142-0ed5426fa40a
+		displayFolder: Sales
+
+		/// Identical to Total Revenue -- kept as a separately-named measure because docs/business_definitions.md uses this exact term.
+	measure 'Successful Revenue' = CALCULATE(
+			[Total Revenue],
+			TREATAS(
+				CALCULATETABLE(VALUES(FactOrders[order_id]), FactOrders[transaction_status] = "Successful"),
+				FactOrderItems[order_id]
+			)
+		)
+		formatString: \$#,##0.00
+		lineageTag: 35d8f241-0f6e-40a7-94ee-5a634e97dcb1
+		displayFolder: Sales
+
+		/// Uses TREATAS since FactOrders and FactOrderItems are deliberately not related -- see docs/powerbi_data_model.md sec 3.
+	measure 'Potential Lost Revenue' = CALCULATE(
+			[Total Revenue],
+			TREATAS(
+				CALCULATETABLE(VALUES(FactOrders[order_id]), FactOrders[transaction_status] = "Failed"),
+				FactOrderItems[order_id]
+			)
+		)
+		formatString: \$#,##0.00
+		lineageTag: aadba06d-0407-4485-9318-bd8770fb55b1
+		displayFolder: Sales
+	measure 'Total Orders' = DISTINCTCOUNT(FactOrders[order_id])
+		formatString: #,##0
+		lineageTag: c8f46306-cc24-4a02-8e9d-27377b91335f
+		displayFolder: Sales
+	measure 'Total Customers' = DISTINCTCOUNT(FactOrders[customer_id])
+		formatString: #,##0
+		lineageTag: c53d8c61-aa8b-4991-b798-2eb8eb1465cb
+		displayFolder: Sales
+	measure 'Total Units' = SUM(FactOrderItems[quantity])
+		formatString: #,##0
+		lineageTag: 1a9a4388-ef5c-435d-b624-6b7427ba6c3f
+		displayFolder: Sales
+	measure 'Average Order Value' = DIVIDE([Total Revenue], [Total Orders])
+		formatString: \$#,##0.00
+		lineageTag: cc9f0312-1a57-4965-b753-15228951a70b
+		displayFolder: Sales
+	measure 'Successful Orders' = CALCULATE(DISTINCTCOUNT(FactOrders[order_id]), FactOrders[transaction_status] = "Successful")
+		formatString: #,##0
+		lineageTag: 23aca6c4-1e43-4790-9d93-6f3a02e9a4a2
+		displayFolder: Transaction Health
+	measure 'Failed Orders' = CALCULATE(DISTINCTCOUNT(FactOrders[order_id]), FactOrders[transaction_status] = "Failed")
+		formatString: #,##0
+		lineageTag: 8d6c00cd-c6e6-45f0-8e68-472b87535376
+		displayFolder: Transaction Health
+	measure 'Cancelled Orders' = CALCULATE(DISTINCTCOUNT(FactOrders[order_id]), FactOrders[order_status] = "Cancelled")
+		formatString: #,##0
+		lineageTag: 55610e78-a6bc-4e0a-a0c1-862a8626071d
+		displayFolder: Transaction Health
+	measure 'Returned Orders' = CALCULATE(DISTINCTCOUNT(FactOrders[order_id]), FactOrders[order_status] = "Returned")
+		formatString: #,##0
+		lineageTag: 963e9a71-b00a-4ba0-9832-3e37b7385098
+		displayFolder: Transaction Health
+	measure 'Payment Success Rate' = DIVIDE([Successful Orders], [Total Orders])
+		formatString: 0.0%
+		lineageTag: fe0ab176-b7af-4146-aa70-105f9a7950b9
+		displayFolder: Transaction Health
+	measure 'Payment Failure Rate' = DIVIDE([Failed Orders], [Total Orders])
+		formatString: 0.0%
+		lineageTag: 8c00fd62-7840-4edf-a324-6489a28343e6
+		displayFolder: Transaction Health
+	measure 'Cancellation Rate' = DIVIDE([Cancelled Orders], [Total Orders])
+		formatString: 0.0%
+		lineageTag: 9a123ddf-f3aa-4b01-a8d7-5b50d2981aea
+		displayFolder: Transaction Health
+	measure 'Return Rate' = DIVIDE([Returned Orders], [Total Orders])
+		formatString: 0.0%
+		lineageTag: 6e0b9119-a75a-4cea-94fc-a16bab86c26a
+		displayFolder: Transaction Health
+	measure 'Cancellation Or Return Rate' = [Cancellation Rate] + [Return Rate]
+		formatString: 0.0%
+		lineageTag: bdb9fc18-cc5e-471a-803c-d1c43e6cf366
+		displayFolder: Transaction Health
+
+		/// order_status is mutually exclusive per docs/business_definitions.md, so these never double-count.
+	measure 'New Customers' = CALCULATE(
+			DISTINCTCOUNT(FactOrders[customer_id]),
+			FILTER(
+				VALUES(FactOrders[customer_id]),
+				CALCULATE(MIN(FactOrders[order_date])) IN VALUES(DimDate[date_key])
+			)
+		)
+		formatString: #,##0
+		lineageTag: 6550f23d-7405-41c6-bd6c-9f113f6299b4
+		displayFolder: Customer
+
+		/// Customers whose EARLIEST-ever order falls within the current date filter context.
+
+	measure 'Returning Customers' = CALCULATE(
+			DISTINCTCOUNT(FactOrders[customer_id]),
+			FILTER(VALUES(FactOrders[customer_id]), CALCULATE(DISTINCTCOUNT(FactOrders[order_id])) > 1)
+		)
+		formatString: #,##0
+		lineageTag: 02b20d77-9880-4948-ae32-f90c36186408
+		displayFolder: Customer
+	measure 'Active Customers' = DISTINCTCOUNT(FactOrders[customer_id])
+		formatString: #,##0
+		lineageTag: b05a1987-3d9f-4451-ab07-276e6bf82650
+		displayFolder: Customer
+
+		/// Same formula as Total Orders' customer count -- named separately since 'active' is meaningful specifically under a date filter.
+	measure 'Churned Customers' = CALCULATE(DISTINCTCOUNT(DimCustomer[customer_id]), DimCustomer[is_churned] = TRUE)
+		formatString: #,##0
+		lineageTag: 121cc9bc-94fb-4a76-be32-11c0931a415e
+		displayFolder: Customer
+	measure 'Total Customers (DimCustomer)' = DISTINCTCOUNT(DimCustomer[customer_id])
+		formatString: #,##0
+		lineageTag: 0e0a4573-226d-4d29-b87e-7f90f571ab83
+		displayFolder: Customer
+
+		/// Customer count independent of any order-date filter -- used as the Churn Rate denominator.
+	measure 'Churn Rate' = DIVIDE([Churned Customers], [Total Customers (DimCustomer)])
+		formatString: 0.0%
+		lineageTag: 6f2f1539-a133-4a41-90db-ec36536bca4a
+		displayFolder: Customer
+	measure 'Retention Rate' = 1 - [Churn Rate]
+		formatString: 0.0%
+		lineageTag: a0a6d08f-435c-41d5-8676-259279ec9810
+		displayFolder: Customer
+	measure 'Customer Revenue' = [Total Revenue]
+		formatString: \$#,##0.00
+		lineageTag: 3535e256-6f1d-48ad-95e7-94cf62e00abf
+		displayFolder: Customer
+	measure 'Orders per Customer' = DIVIDE([Total Orders], [Total Customers])
+		formatString: 0.00
+		lineageTag: bca74fbe-1246-43f0-8ae7-0a042f5783f5
+		displayFolder: Customer
+	measure 'Average Customer Value' = DIVIDE([Total Revenue], [Total Customers])
+		formatString: \$#,##0.00
+		lineageTag: 84b7069c-fa29-4b16-b769-6924ba7d7922
+		displayFolder: Customer
+	measure 'High Risk Transactions' = CALCULATE(DISTINCTCOUNT(FactRisk[order_id]), FactRisk[transaction_risk_flag] = "High Risk")
+		formatString: #,##0
+		lineageTag: 7a1aa1dd-35c0-40ab-b558-ac21b439f5cd
+		displayFolder: Risk
+	measure 'Review Transactions' = CALCULATE(DISTINCTCOUNT(FactRisk[order_id]), FactRisk[transaction_risk_flag] = "Review")
+		formatString: #,##0
+		lineageTag: f44af496-1689-4369-b4a1-015a169751d7
+		displayFolder: Risk
+	measure 'Duplicate Candidates' = CALCULATE(DISTINCTCOUNT(FactRisk[order_id]), FactRisk[possible_duplicate_flag] = TRUE)
+		formatString: #,##0
+		lineageTag: 2452bb28-03ed-4d63-a19e-48af3d8f57cd
+		displayFolder: Risk
+	measure 'High Risk Value' = CALCULATE(
+			[Total Revenue],
+			TREATAS(
+				CALCULATETABLE(VALUES(FactRisk[order_id]), FactRisk[transaction_risk_flag] = "High Risk"),
+				FactOrderItems[order_id]
+			)
+		)
+		formatString: \$#,##0.00
+		lineageTag: b5eea74f-1bfa-4849-a363-a657e993cdd2
+		displayFolder: Risk
+	measure 'Failed High Risk Transactions' = CALCULATE(
+			DISTINCTCOUNT(FactRisk[order_id]),
+			FactRisk[transaction_risk_flag] = "High Risk",
+			TREATAS(
+				CALCULATETABLE(VALUES(FactOrders[order_id]), FactOrders[transaction_status] = "Failed"),
+				FactRisk[order_id]
+			)
+		)
+		formatString: #,##0
+		lineageTag: 253fc2bb-32fc-41cd-904a-e2c0f3b5df50
+		displayFolder: Risk
+	measure 'Product Revenue' = [Total Revenue]
+		formatString: \$#,##0.00
+		lineageTag: 2cbf78de-3a36-4250-8731-e5114de8461c
+		displayFolder: Product
+	measure 'Product Units' = [Total Units]
+		formatString: #,##0
+		lineageTag: 73efcb80-9cd8-4be6-b214-d0fd347a442e
+		displayFolder: Product
+	measure 'Top Product Revenue' = MAXX(VALUES(DimProduct[product_id]), [Product Revenue])
+		formatString: \$#,##0.00
+		lineageTag: ebc68b58-9e96-4430-b7ac-e51262fb19b3
+		displayFolder: Product
+	measure 'Product Rank' = RANKX(ALL(DimProduct[product_id]), [Product Revenue], , DESC, DENSE)
+		formatString: #,##0
+		lineageTag: 19a9459d-7468-4eb5-996f-3d959aa6b3c1
+		displayFolder: Product
+	measure 'Top Category Revenue' = MAXX(VALUES(DimProduct[category]), [Product Revenue])
+		formatString: \$#,##0.00
+		lineageTag: 14e9899c-2866-4fa3-89e2-998298615e84
+		displayFolder: Product
+	measure 'Category Rank' = RANKX(ALL(DimProduct[category]), [Product Revenue], , DESC, DENSE)
+		formatString: #,##0
+		lineageTag: 358bf529-62f8-4388-a541-00debf2389fb
+		displayFolder: Product
+	measure 'Revenue Contribution %' = DIVIDE([Product Revenue], CALCULATE([Product Revenue], ALL(DimProduct)))
+		formatString: 0.0%
+		lineageTag: bc89b94d-aebb-434e-92e0-4d1bb0efff26
+		displayFolder: Product
+	measure 'Profit' = SUM(FactOrderItems[profit_usd])
+		formatString: \$#,##0.00
+		lineageTag: cd642e85-9a95-4da1-8662-fd7923cc730c
+		displayFolder: Product
+
+		/// Assumed formula total_price_usd - cost_usd, unverified against real data -- see docs/data_dictionary.md.
+	measure 'Cumulative Revenue %' = VAR CurrentProductRevenue = [Product Revenue]
+		RETURN
+			DIVIDE(
+				SUMX(
+					FILTER(ALL(DimProduct), [Product Revenue] >= CurrentProductRevenue),
+					[Product Revenue]
+				),
+				CALCULATE([Product Revenue], ALL(DimProduct))
+			)
+		formatString: 0.0%
+		lineageTag: aecad9ed-2634-4514-8924-c20d64b24fdc
+		displayFolder: Product
+
+		/// Pareto cumulative-%% pattern for the Product & Revenue page's Pareto analysis visual.
+	measure 'Revenue MTD' = TOTALMTD([Total Revenue], DimDate[date_key])
+		formatString: \$#,##0.00
+		lineageTag: 7923e26d-4f93-4375-8178-a0ae000555d0
+		displayFolder: Time Intelligence
+	measure 'Revenue YTD' = TOTALYTD([Total Revenue], DimDate[date_key])
+		formatString: \$#,##0.00
+		lineageTag: 46ce5c1b-4c16-4b09-a417-dc6ba74a2f2d
+		displayFolder: Time Intelligence
+	measure 'Previous Month Revenue' = CALCULATE([Total Revenue], DATEADD(DimDate[date_key], -1, MONTH))
+		formatString: \$#,##0.00
+		lineageTag: 8c8d3c76-a606-4335-841b-b681dd2b4e40
+		displayFolder: Time Intelligence
+	measure 'MoM Revenue Growth %' = DIVIDE([Total Revenue] - [Previous Month Revenue], [Previous Month Revenue])
+		formatString: 0.0%
+		lineageTag: af093cc9-6bb8-4640-b04c-03e25ee41048
+		displayFolder: Time Intelligence
+	measure 'Rolling 3-Month Revenue' = CALCULATE([Total Revenue], DATESINPERIOD(DimDate[date_key], MAX(DimDate[date_key]), -3, MONTH))
+		formatString: \$#,##0.00
+		lineageTag: 6e13cc5c-f86c-4e6a-88bf-874374a9171a
+		displayFolder: Time Intelligence
+	measure 'Previous Year Revenue' = CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(DimDate[date_key]))
+		formatString: \$#,##0.00
+		lineageTag: e515748c-2b06-44b4-92b4-4a87785564ba
+		displayFolder: Time Intelligence
+	measure 'YoY Growth %' = DIVIDE([Total Revenue] - [Previous Year Revenue], [Previous Year Revenue])
+		formatString: 0.0%
+		lineageTag: 7c623761-b7aa-470d-af26-09c6f8278c20
+		displayFolder: Time Intelligence
+	measure 'YoY Growth % (partial-period flagged)' = VAR IsPartialEdge =
+			OR(
+				MIN(DimDate[month_number]) IN {1, 2} && MAX(DimDate[year]) = 2026,
+				MIN(DimDate[month_number]) = 3 && MIN(DimDate[year]) = 2024
+			)
+		RETURN
+			IF(IsPartialEdge, BLANK(), [YoY Growth %])
+		formatString: 0.0%
+		lineageTag: 2eb9f1b7-1b66-472e-bc4d-4a96f19d302a
+		displayFolder: Time Intelligence
+
+		/// Dataset spans Mar 2024-Feb 2026 (not clean calendar years) -- flags the edge months rather than showing a misleading comparison. See docs/powerbi_measures.md.
+	measure 'Executive Insight' = VAR TopCategoryName =
+			CALCULATE(
+				SELECTEDVALUE(DimProduct[category]),
+				TOPN(1, ALL(DimProduct[category]), [Product Revenue], DESC)
+			)
+		VAR TopCategoryShare =
+			CALCULATE([Revenue Contribution %], ALL(DimProduct[product_id]), DimProduct[category] = TopCategoryName)
+		RETURN
+			TopCategoryName & " leads revenue at " & FORMAT(TopCategoryShare, "0.0%") &
+			" of the total. Payment failure rate is " & FORMAT([Payment Failure Rate], "0.0%") & "."
+		lineageTag: 3144ab27-1cc6-4959-88e0-49479fab4783
+		displayFolder: Executive Summary
+
+		/// DAX-driven dynamic insight text for Page 1 -- see powerbi/dashboard_pages.md.
+
+	column '_MeasuresPlaceholder'
+		isHidden
+		formatString: 0
+		lineageTag: 01aea4ed-a4d5-4c9e-8f9f-dbd0e48611cd
+		summarizeBy: none
+		sourceColumn: _MeasuresPlaceholder
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = m
+		mode: import
+		source =
+			let
+			    Source = #table({"_MeasuresPlaceholder"}, {{0}})
+			in
+			    Source

@@ -1,0 +1,144 @@
+table DimDate
+	dataCategory: Time
+	lineageTag: e94bde48-321a-4618-a582-f2d99bd1f12f
+
+	column date_key
+		isKey
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 26aaa8ac-9cd3-4f6d-b1e6-b5e65f816ace
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+	column year
+		dataType: int64
+		lineageTag: 15c2dd30-4782-4de1-b58e-e87e9cc1f91f
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+	column quarter
+		dataType: int64
+		lineageTag: 1363f501-7820-44d2-aeeb-2715b1461387
+		summarizeBy: none
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+	column quarter_label
+		dataType: string
+		sortByColumn: quarter
+		lineageTag: 33bc3949-e011-4ec8-9c58-b6f84b027100
+		summarizeBy: none
+		sourceColumn: quarter_label
+
+		annotation SummarizationSetBy = Automatic
+	column month_number
+		dataType: int64
+		lineageTag: 48f6b5a2-6ad6-4647-8466-d2b81308f6ab
+		summarizeBy: none
+		sourceColumn: month_number
+
+		annotation SummarizationSetBy = Automatic
+	column month_name
+		dataType: string
+		sortByColumn: month_number
+		lineageTag: d8fadb3c-5731-4685-b251-f225d3a5c9f2
+		summarizeBy: none
+		sourceColumn: month_name
+
+		annotation SummarizationSetBy = Automatic
+	column month_short_name
+		dataType: string
+		lineageTag: afb470dd-1906-48fc-97b8-ebc30e92c246
+		summarizeBy: none
+		sourceColumn: month_short_name
+
+		annotation SummarizationSetBy = Automatic
+	column iso_week
+		dataType: int64
+		lineageTag: 46f693db-4c95-49df-b345-87d6747a818e
+		summarizeBy: none
+		sourceColumn: iso_week
+
+		annotation SummarizationSetBy = Automatic
+	column day_of_month
+		dataType: int64
+		lineageTag: 4cf6445c-2365-490f-885a-15bcbdcca2a4
+		summarizeBy: none
+		sourceColumn: day_of_month
+
+		annotation SummarizationSetBy = Automatic
+	column day_of_week_number
+		dataType: int64
+		lineageTag: 3d5087f9-3102-4b50-b8ab-c91cf9fa854a
+		summarizeBy: none
+		sourceColumn: day_of_week_number
+
+		annotation SummarizationSetBy = Automatic
+	column day_of_week_name
+		dataType: string
+		sortByColumn: day_of_week_number
+		lineageTag: e501b18b-4c17-4bc0-a62e-9a7439e09c63
+		summarizeBy: none
+		sourceColumn: day_of_week_name
+
+		annotation SummarizationSetBy = Automatic
+	column day_of_week_short_name
+		dataType: string
+		lineageTag: e316c50f-b1e2-426d-b5d1-2ec15e498029
+		summarizeBy: none
+		sourceColumn: day_of_week_short_name
+
+		annotation SummarizationSetBy = Automatic
+	column is_weekend
+		dataType: boolean
+		lineageTag: 59f64801-2998-4ff9-aaf1-14c8449b8428
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+		annotation SummarizationSetBy = Automatic
+	column year_month_label
+		dataType: string
+		lineageTag: bab34eb8-3de3-45a3-99cd-39a14fe5e55a
+		summarizeBy: none
+		sourceColumn: year_month_label
+
+		annotation SummarizationSetBy = Automatic
+	column year_month_key
+		dataType: int64
+		lineageTag: 479c2a8e-e6d4-4f9e-a92b-bad8cba285bf
+		summarizeBy: none
+		sourceColumn: year_month_key
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Sort month_name chronologically by month_number, and day_of_week_name by day_of_week_number,
+	/// in Power BI Desktop (Column tools -> Sort by Column) -- TMDL 'sortByColumn' property set below.
+
+	partition DimDate = m
+		mode: import
+		source =
+			let
+			    StartDate = #date(2024,1,1),
+			    EndDate = #date(2026,12,31),
+			    DayCount = Duration.Days(EndDate - StartDate) + 1,
+			    DateList = List.Dates(StartDate, DayCount, #duration(1,0,0,0)),
+			    #"Converted to Table" = Table.FromList(DateList, Splitter.SplitByNothing(), {"date_key"}),
+			    #"Changed Type" = Table.TransformColumnTypes(#"Converted to Table",{{"date_key", type date}}),
+			    #"Added Year" = Table.AddColumn(#"Changed Type", "year", each Date.Year([date_key]), Int64.Type),
+			    #"Added Quarter" = Table.AddColumn(#"Added Year", "quarter", each Date.QuarterOfYear([date_key]), Int64.Type),
+			    #"Added QuarterLabel" = Table.AddColumn(#"Added Quarter", "quarter_label", each "Q" & Text.From(Date.QuarterOfYear([date_key])), type text),
+			    #"Added MonthNumber" = Table.AddColumn(#"Added QuarterLabel", "month_number", each Date.Month([date_key]), Int64.Type),
+			    #"Added MonthName" = Table.AddColumn(#"Added MonthNumber", "month_name", each Date.MonthName([date_key]), type text),
+			    #"Added MonthShortName" = Table.AddColumn(#"Added MonthName", "month_short_name", each Text.Start(Date.MonthName([date_key]), 3), type text),
+			    #"Added IsoWeek" = Table.AddColumn(#"Added MonthShortName", "iso_week", each Date.WeekOfYear([date_key]), Int64.Type),
+			    #"Added DayOfMonth" = Table.AddColumn(#"Added IsoWeek", "day_of_month", each Date.Day([date_key]), Int64.Type),
+			    #"Added DayOfWeekNumber" = Table.AddColumn(#"Added DayOfMonth", "day_of_week_number", each Date.DayOfWeek([date_key], Day.Monday) + 1, Int64.Type),
+			    #"Added DayOfWeekName" = Table.AddColumn(#"Added DayOfWeekNumber", "day_of_week_name", each Date.DayOfWeekName([date_key]), type text),
+			    #"Added DayOfWeekShortName" = Table.AddColumn(#"Added DayOfWeekName", "day_of_week_short_name", each Text.Start(Date.DayOfWeekName([date_key]), 3), type text),
+			    #"Added IsWeekend" = Table.AddColumn(#"Added DayOfWeekShortName", "is_weekend", each Date.DayOfWeek([date_key], Day.Monday) >= 5, type logical),
+			    #"Added YearMonthLabel" = Table.AddColumn(#"Added IsWeekend", "year_month_label", each Text.From(Date.Year([date_key])) & "-" & Text.PadStart(Text.From(Date.Month([date_key])), 2, "0"), type text),
+			    #"Added YearMonthKey" = Table.AddColumn(#"Added YearMonthLabel", "year_month_key", each Date.Year([date_key]) * 100 + Date.Month([date_key]), Int64.Type)
+			in
+			    #"Added YearMonthKey"

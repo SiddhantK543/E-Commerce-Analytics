@@ -1,0 +1,12 @@
+order_id,customer_id,order_year,order_month,order_day,order_status,return_reason
+O001,C001,2024,3,15,Delivered,
+O002,C002,2024,4,2,Returned,Defective item
+O003,C003,2024,5,20,Delivered,
+O004,C001,2024,6,10,Cancelled,Customer changed mind
+O005,C004,2025,1,5,Delivered,
+O006,C005,2025,2,14,Delivered,
+O007,C002,2025,3,3,Returned,Wrong size
+O008,C003,2025,7,22,Delivered,
+O009,C001,2026,1,1,Delivered,
+O010,C005,2026,2,10,Delivered,
+O011,C001,2024,3,15,Delivered,

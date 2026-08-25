@@ -1,0 +1,12 @@
+order_id,payment_method,payment_status,installment,currency
+O001,Credit Card,Success,No,USD
+O002,PayPal,Success,No,USD
+O003,Debit Card,Failed,No,USD
+O004,Bank Transfer,Success,No,USD
+O005,Apple Pay,Success,No,USD
+O006,Credit Card,Success,Yes,USD
+O007,PayPal,Failed,No,USD
+O008,Debit Card,Success,No,USD
+O009,Credit Card,Success,No,USD
+O010,PayPal,Success,No,USD
+O011,Credit Card,Success,No,USD

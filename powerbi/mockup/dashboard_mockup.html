@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>E-Commerce Transaction &amp; Business Analytics — Dashboard Mockup</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --primary: #2C6E91;
+    --good: #63A375;
+    --neutral: #D98E04;
+    --bad: #B5495B;
+    --purple: #6C5B7B;
+    --gray: #8C8C8C;
+    --bg: #FFFFFF;
+    --panel: #FAFAFA;
+    --border: #E5E5E5;
+    --text: #333333;
+    --text-light: #666666;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Segoe UI", -apple-system, sans-serif;
+    background: #F3F4F6; color: var(--text);
+  }
+  .banner {
+    background: #FFF7E6; border-bottom: 1px solid #F0DDA8; color: #7A5A00;
+    padding: 8px 20px; font-size: 12.5px; text-align: center;
+  }
+  header {
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 20px;
+  }
+  header h1 { font-size: 15px; margin: 0; font-weight: 600; color: var(--text); }
+  nav { display: flex; gap: 6px; }
+  nav button {
+    border: 1px solid var(--border); background: var(--panel); color: var(--text-light);
+    padding: 7px 14px; font-size: 12.5px; border-radius: 5px; cursor: pointer;
+    font-family: inherit;
+  }
+  nav button.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
+  main { max-width: 1240px; margin: 18px auto; padding: 0 16px 40px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .kpirow { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .kpi {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .kpi .val { font-size: 24px; font-weight: 700; color: var(--primary); }
+  .kpi .lbl { font-size: 11px; color: var(--text-light); margin-top: 2px; text-transform: uppercase; letter-spacing: .03em; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .card {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px;
+  }
+  .card h3 { font-size: 12.5px; margin: 0 0 10px; font-weight: 600; color: var(--text); }
+  .card canvas { max-height: 220px; }
+  .span2 { grid-column: span 2; }
+  .insight {
+    background: #EEF5F9; border: 1px solid #D3E6EE; border-left: 4px solid var(--primary);
+    border-radius: 4px; padding: 12px 14px; font-size: 12.5px; color: #1F4E5F; margin-top: 14px;
+  }
+  .insight b { color: var(--primary); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  th { color: var(--text-light); font-weight: 600; font-size: 11px; text-transform: uppercase; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+  .tag.high { background: #FBEAEE; color: var(--bad); }
+  .tag.review { background: #FDF2E1; color: var(--neutral); }
+  .tag.normal { background: #EAF3EE; color: var(--good); }
+  .slicers { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .slicer { background: var(--panel); border: 1px solid var(--border); border-radius: 5px; padding: 6px 10px; font-size: 11.5px; color: var(--text-light); }
+  .riskbanner { background: #FBEAEE; border: 1px solid #F0C9D3; color: #7A2333; padding: 8px 12px; border-radius: 5px; font-size: 12px; margin-bottom: 14px; }
+  .footer-note { text-align: center; font-size: 11px; color: var(--text-light); margin-top: 20px; }
+  .homebtn { border: none; background: none; color: var(--text-light); font-size: 12px; cursor: pointer; padding: 4px 8px; }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  MOCKUP ONLY — this is a static HTML/Chart.js preview of the Power BI design in <code>powerbi/dashboard_pages.md</code>, not a real .pbix file. All numbers below come from the synthetic <code>data/sample/</code> test fixture (5 customers, 11 orders), not real business data.
+</div>
+
+<header>
+  <h1>📊 E-Commerce Transaction &amp; Business Analytics</h1>
+  <nav id="nav"></nav>
+</header>
+
+<main>
+
+<!-- PAGE 1: EXECUTIVE OVERVIEW -->
+<div class="page" id="page-1">
+  <div class="kpirow">
+    <div class="kpi"><div class="val">$1,480</div><div class="lbl">Total Revenue</div></div>
+    <div class="kpi"><div class="val">11</div><div class="lbl">Total Orders</div></div>
+    <div class="kpi"><div class="val">$134.58</div><div class="lbl">Avg Order Value</div></div>
+    <div class="kpi"><div class="val">5</div><div class="lbl">Total Customers</div></div>
+    <div class="kpi"><div class="val">63.6%</div><div class="lbl">Payment Success</div></div>
+    <div class="kpi"><div class="val">18.2%</div><div class="lbl">Cancel/Return Rate</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Revenue Trend</h3><canvas id="c-revtrend"></canvas></div>
+    <div class="card"><h3>Order Trend</h3><canvas id="c-ordtrend"></canvas></div>
+    <div class="card"><h3>Revenue by Category</h3><canvas id="c-catrev"></canvas></div>
+    <div class="card"><h3>Top Products</h3><canvas id="c-topprod"></canvas></div>
+  </div>
+  <div class="card" style="margin-top:14px;"><h3>Customer Segment Distribution</h3><canvas id="c-segdist" style="max-width:320px;margin:0 auto;display:block;"></canvas></div>
+  <div class="insight">📌 <b>Executive Insight (DAX-driven):</b> "Electronics leads revenue at 52.7% of the total. Payment failure rate is 18.2%."</div>
+</div>
+
+<!-- PAGE 2: TRANSACTION & PAYMENT HEALTH -->
+<div class="page" id="page-2">
+  <div class="slicers">
+    <div class="slicer">📅 Date: All</div><div class="slicer">🌍 Country: All</div>
+    <div class="slicer">💳 Payment Method: All</div><div class="slicer">👥 Segment: All</div>
+  </div>
+  <div class="kpirow">
+    <div class="kpi"><div class="val">7</div><div class="lbl">Successful</div></div>
+    <div class="kpi"><div class="val">2</div><div class="lbl">Failed</div></div>
+    <div class="kpi"><div class="val">1</div><div class="lbl">Cancelled</div></div>
+    <div class="kpi"><div class="val">1</div><div class="lbl">Returned</div></div>
+    <div class="kpi"><div class="val">63.6%</div><div class="lbl">Payment Success Rate</div></div>
+    <div class="kpi"><div class="val">$210.49</div><div class="lbl">Potential Lost Value</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Payment Success/Failure Trend</h3><canvas id="c-payfailtrend"></canvas></div>
+    <div class="card"><h3>Payment Method Performance</h3><canvas id="c-paymethod"></canvas></div>
+    <div class="card"><h3>Cancellation Trend</h3><canvas id="c-canceltrend"></canvas></div>
+    <div class="card"><h3>Transaction Health Distribution</h3><canvas id="c-txnhealth"></canvas></div>
+  </div>
+  <div class="insight">⚠️ Payment-method failure rates (e.g. Debit Card 50%, PayPal 33%) are <b>not statistically meaningful</b> at n=1–3 orders/method in this test fixture — will be re-evaluated on real data volume.</div>
+</div>
+
+<!-- PAGE 3: CUSTOMER ANALYTICS -->
+<div class="page" id="page-3">
+  <div class="slicers"><div class="slicer">📅 Date: All</div><div class="slicer">🌍 Country: All</div><div class="slicer">🎯 RFM Segment: All</div></div>
+  <div class="kpirow">
+    <div class="kpi"><div class="val">5</div><div class="lbl">Customers</div></div>
+    <div class="kpi"><div class="val">5</div><div class="lbl">Active Customers</div></div>
+    <div class="kpi"><div class="val">4</div><div class="lbl">Returning Customers</div></div>
+    <div class="kpi"><div class="val">60%</div><div class="lbl">Churn Rate</div></div>
+    <div class="kpi"><div class="val">$296.08</div><div class="lbl">Avg Customer Value</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>RFM Distribution</h3><canvas id="c-rfmdist"></canvas></div>
+    <div class="card"><h3>Revenue by RFM Segment</h3><canvas id="c-rfmrev"></canvas></div>
+    <div class="card"><h3>Churn by RFM Segment</h3><canvas id="c-churnseg"></canvas></div>
+    <div class="card"><h3>Retention Rate</h3>
+      <div style="display:flex;align-items:center;justify-content:center;height:220px;">
+        <div style="text-align:center;"><div style="font-size:42px;font-weight:700;color:var(--good);">40%</div><div style="font-size:12px;color:var(--text-light);">Retention Rate (100 − Churn Rate)<br>See SQL cohort_retention view for month-by-month detail</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px;"><h3>Top Customers</h3>
+    <table><thead><tr><th>Customer</th><th>RFM Segment</th><th>Revenue</th><th>Orders</th></tr></thead>
+    <tbody>
+      <tr><td>Alice Smith</td><td>Champions</td><td>$679.96</td><td>4</td></tr>
+      <tr><td>Eva Brown</td><td>Champions</td><td>$424.98</td><td>2</td></tr>
+      <tr><td>Bob Jones</td><td>At Risk</td><td>$179.98</td><td>2</td></tr>
+      <tr><td>Carla Diaz</td><td>Loyal Customers</td><td>$120.48</td><td>2</td></tr>
+      <tr><td>David Lee</td><td>Lost Customers</td><td>$75.00</td><td>1</td></tr>
+    </tbody></table>
+  </div>
+  <div class="insight">📌 Both Champions-segment customers are <b>not</b> churned, while every other segment's customer(s) are — RFM and churn agree directionally on this fixture, a useful cross-check.</div>
+</div>
+
+<!-- PAGE 4: PRODUCT & REVENUE -->
+<div class="page" id="page-4">
+  <div class="slicers"><div class="slicer">📅 Date: All</div><div class="slicer">📦 Category: All</div></div>
+  <div class="kpirow">
+    <div class="kpi"><div class="val">$1,480.40</div><div class="lbl">Revenue</div></div>
+    <div class="kpi"><div class="val">16</div><div class="lbl">Units</div></div>
+    <div class="kpi"><div class="val">$134.58</div><div class="lbl">Avg Order Value</div></div>
+    <div class="kpi"><div class="val">$640.40</div><div class="lbl">Profit *</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Top Products</h3><canvas id="c-topprod2"></canvas></div>
+    <div class="card"><h3>Category Revenue &amp; Profit</h3><canvas id="c-catprofit"></canvas></div>
+    <div class="card span2"><h3>Pareto Analysis (Product Revenue, Cumulative %)</h3><canvas id="c-pareto"></canvas></div>
+  </div>
+  <div class="card" style="margin-top:14px;"><h3>Category Contribution</h3><canvas id="c-catcontrib" style="max-width:320px;margin:0 auto;display:block;"></canvas></div>
+  <div class="insight">📌 Top 3 of 5 products (Wireless Headphones, Blender, Running Shoes) already reach 87.2% of cumulative revenue — a Pareto-shaped result even at this small scale. * Profit uses the assumed <code>total_price_usd − cost_usd</code> formula, unverified against real data (see docs/data_dictionary.md).</div>
+</div>
+
+<!-- PAGE 5: RISK & ANOMALIES -->
+<div class="page" id="page-5">
+  <div class="riskbanner"><b>Rule-Based Risk Monitoring</b> — signals below are transparent, documented rules, not a predictive fraud model and not confirmed fraud. See docs/business_definitions.md.</div>
+  <div class="slicers"><div class="slicer">📅 Date: All</div><div class="slicer">🌍 Country: All</div><div class="slicer">💳 Payment Method: All</div></div>
+  <div class="kpirow">
+    <div class="kpi"><div class="val">4</div><div class="lbl">High Risk</div></div>
+    <div class="kpi"><div class="val">3</div><div class="lbl">Review</div></div>
+    <div class="kpi"><div class="val">2</div><div class="lbl">Duplicate Candidates</div></div>
+    <div class="kpi"><div class="val">$590.47</div><div class="lbl">High Risk Value</div></div>
+    <div class="kpi"><div class="val">2</div><div class="lbl">Failed + High Risk</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Risk Distribution</h3><canvas id="c-riskdist"></canvas></div>
+    <div class="card"><h3>Risk by Payment Method</h3><canvas id="c-riskpay"></canvas></div>
+    <div class="card"><h3>Risk by Country</h3><canvas id="c-riskcountry"></canvas></div>
+    <div class="card"><h3>High-Value Anomalies</h3>
+      <div style="display:flex;align-items:center;justify-content:center;height:220px;color:var(--text-light);font-size:12.5px;text-align:center;">
+        No orders currently meet the "unusually high value" threshold<br>(mean + 2σ) on this test fixture.
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px;"><h3>Duplicate Candidates</h3>
+    <table><thead><tr><th>Order</th><th>Customer</th><th>Value</th><th>Fraud Score</th><th>Flag</th></tr></thead>
+    <tbody>
+      <tr><td>O001</td><td>C001</td><td>$189.99</td><td>12.5</td><td><span class="tag high">High Risk</span></td></tr>
+      <tr><td>O011</td><td>C001</td><td>$189.99</td><td>12.5</td><td><span class="tag high">High Risk</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="insight">📌 Both of the fixture's 2 failed-payment orders are also flagged High Risk (100% overlap at n=2) — a dataset-grounded observation, not a general claim.</div>
+</div>
+
+</main>
+<div class="footer-note">Synthetic test data — see docs/python_analytics.md for dataset status · Mockup generated from powerbi/dashboard_pages.md</div>
+
+<script>
+const pages = [
+  {id:'page-1', label:'Executive Overview'},
+  {id:'page-2', label:'Transaction & Payment Health'},
+  {id:'page-3', label:'Customer Analytics'},
+  {id:'page-4', label:'Product & Revenue'},
+  {id:'page-5', label:'Risk & Anomalies'},
+];
+const nav = document.getElementById('nav');
+pages.forEach((p,i) => {
+  const b = document.createElement('button');
+  b.textContent = p.label;
+  b.onclick = () => showPage(i);
+  nav.appendChild(b);
+});
+function showPage(i) {
+  pages.forEach((p,j) => {
+    document.getElementById(p.id).classList.toggle('active', i===j);
+    nav.children[j].classList.toggle('active', i===j);
+  });
+}
+showPage(0);
+
+Chart.defaults.font.family = "Segoe UI, sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#666666';
+Chart.defaults.plugins.legend.labels.boxWidth = 10;
+const palette = ['#2C6E91','#63A375','#D98E04','#B5495B','#6C5B7B','#8C8C8C'];
+const grid = { color: '#F0F0F0' };
+
+const months = ['2024-03','2024-04','2024-05','2024-06','2025-01','2025-02','2025-03','2025-07','2026-01','2026-02'];
+const revByMonth = [379.98,59.98,90.49,120.00,75.00,399.98,120.00,29.99,179.98,25.00];
+const ordByMonth = [2,1,1,1,1,1,1,1,1,1];
+
+new Chart('c-revtrend', {type:'line', data:{labels:months, datasets:[{data:revByMonth, borderColor:palette[0], backgroundColor:palette[0], tension:.25, pointRadius:3}]}, options:{plugins:{legend:{display:false}}, scales:{y:{grid, ticks:{callback:v=>'$'+v}}, x:{grid:{display:false}}}}});
+new Chart('c-ordtrend', {type:'line', data:{labels:months, datasets:[{data:ordByMonth, borderColor:palette[1], backgroundColor:palette[1], tension:.25, pointRadius:3}]}, options:{plugins:{legend:{display:false}}, scales:{y:{grid, ticks:{stepSize:1}}, x:{grid:{display:false}}}}});
+new Chart('c-catrev', {type:'bar', data:{labels:['Electronics','Home','Sports'], datasets:[{data:[779.96,370.47,329.97], backgroundColor:palette[0]}]}, options:{plugins:{legend:{display:false}}, scales:{y:{grid, ticks:{callback:v=>'$'+v}}, x:{grid:{display:false}}}}});
+new Chart('c-topprod', {type:'bar', data:{labels:['Wireless Headphones','Blender','Running Shoes','Desk Lamp','Yoga Mat'], datasets:[{data:[779.96,270.47,240.00,100.00,89.97], backgroundColor:palette[0]}]}, options:{indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{grid, ticks:{callback:v=>'$'+v}}, y:{grid:{display:false}}}}});
+new Chart('c-topprod2', {type:'bar', data:{labels:['Wireless Headphones','Blender','Running Shoes','Desk Lamp','Yoga Mat'], datasets:[{data:[779.96,270.47,240.00,100.00,89.97], backgroundColor:palette[0]}]}, options:{indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{grid, ticks:{callback:v=>'$'+v}}, y:{grid:{display:false}}}}});
+new Chart('c-segdist', {type:'doughnut', data:{labels:['VIP','Regular','Premium'], datasets:[{data:[2,2,1], backgroundColor:[palette[0],palette[1],palette[2]]}]}, options:{plugins:{legend:{position:'bottom'}}}});
+
+new Chart('c-payfailtrend', {type:'line', data:{labels:months, datasets:[
+  {label:'Success Rate', data:[100,0,0,0,100,100,0,100,100,100], borderColor:palette[1], tension:.2, pointRadius:3},
+  {label:'Failure Rate', data:[0,0,100,0,0,0,100,0,0,0], borderColor:palette[3], tension:.2, pointRadius:3},
+]}, options:{scales:{y:{grid, max:100}, x:{grid:{display:false}}}}});
+new Chart('c-paymethod', {type:'bar', data:{labels:['Credit Card','PayPal','Debit Card','Apple Pay','Bank Transfer'], datasets:[
+  {label:'Success', data:[4,2,1,1,1], backgroundColor:palette[1]},
+  {label:'Failed', data:[0,1,1,0,0], backgroundColor:palette[3]},
+]}, options:{scales:{y:{grid, ticks:{stepSize:1}}, x:{grid:{display:false}}}}});
+new Chart('c-canceltrend', {type:'line', data:{labels:months, datasets:[{label:'Cancellation Rate %', data:[0,0,0,100,0,0,0,0,0,0], borderColor:palette[3], tension:.2, pointRadius:3}]}, options:{scales:{y:{grid,max:100}, x:{grid:{display:false}}}}});
+new Chart('c-txnhealth', {type:'doughnut', data:{labels:['Successful ($1,089.93)','Failed ($210.49)','Returned ($59.98)','Cancelled ($120.00)'], datasets:[{data:[7,2,1,1], backgroundColor:[palette[1],palette[3],palette[2],palette[4]]}]}, options:{plugins:{legend:{position:'bottom'}}}});
+
+new Chart('c-rfmdist', {type:'doughnut', data:{labels:['Champions','At Risk','Loyal Customers','Lost Customers'], datasets:[{data:[2,1,1,1], backgroundColor:[palette[1],palette[3],palette[0],palette[5]]}]}, options:{plugins:{legend:{position:'bottom'}}}});
+new Chart('c-rfmrev', {type:'bar', data:{labels:['Champions','At Risk','Loyal Customers','Lost Customers'], datasets:[{data:[1104.94,179.98,120.48,75.00], backgroundColor:palette[0]}]}, options:{plugins:{legend:{display:false}}, scales:{y:{grid, ticks:{callback:v=>'$'+v}}, x:{grid:{display:false}}}}});
+new Chart('c-churnseg', {type:'bar', data:{labels:['Champions','At Risk','Loyal Customers','Lost Customers'], datasets:[
+  {label:'Not Churned', data:[2,0,0,0], backgroundColor:palette[1]},
+  {label:'Churned', data:[0,1,1,1], backgroundColor:palette[3]},
+]}, options:{scales:{y:{grid, ticks:{stepSize:1}}, x:{grid:{display:false}}}}});
+
+new Chart('c-catprofit', {type:'bar', data:{labels:['Electronics','Home','Sports'], datasets:[
+  {label:'Revenue', data:[779.96,370.47,329.97], backgroundColor:palette[0]},
+  {label:'Profit', data:[299.96,160.47,179.97], backgroundColor:palette[1]},
+]}, options:{scales:{y:{grid, ticks:{callback:v=>'$'+v}}, x:{grid:{display:false}}}}});
+new Chart('c-pareto', {data:{labels:['Wireless Headphones','Blender','Running Shoes','Desk Lamp','Yoga Mat'], datasets:[
+  {type:'bar', label:'Revenue', data:[779.96,270.47,240.00,100.00,89.97], backgroundColor:palette[0], order:2},
+  {type:'line', label:'Cumulative %', data:[52.7,71.0,87.2,93.9,100.0], borderColor:palette[2], yAxisID:'y1', tension:.2, pointRadius:3, order:1},
+]}, options:{scales:{y:{grid, ticks:{callback:v=>'$'+v}}, y1:{position:'right', min:0, max:100, grid:{drawOnChartArea:false}, ticks:{callback:v=>v+'%'}}, x:{grid:{display:false}}}}});
+new Chart('c-catcontrib', {type:'doughnut', data:{labels:['Electronics (52.7%)','Home (25.0%)','Sports (22.3%)'], datasets:[{data:[779.96,370.47,329.97], backgroundColor:[palette[0],palette[1],palette[2]]}]}, options:{plugins:{legend:{position:'bottom'}}}});
+
+new Chart('c-riskdist', {type:'doughnut', data:{labels:['High Risk','Review','Normal'], datasets:[{data:[4,3,4], backgroundColor:[palette[3],palette[2],palette[1]]}]}, options:{plugins:{legend:{position:'bottom'}}}});
+new Chart('c-riskpay', {type:'bar', data:{labels:['Credit Card','PayPal','Debit Card','Apple Pay','Bank Transfer'], datasets:[
+  {label:'High Risk', data:[2,1,1,0,0], backgroundColor:palette[3]},
+  {label:'Review', data:[1,1,0,0,1], backgroundColor:palette[2]},
+  {label:'Normal', data:[1,1,1,1,0], backgroundColor:palette[1]},
+]}, options:{scales:{x:{stacked:true, grid:{display:false}}, y:{stacked:true, grid, ticks:{stepSize:1}}}}});
+new Chart('c-riskcountry', {type:'bar', data:{labels:['USA','Mexico','Canada'], datasets:[
+  {label:'High Risk', data:[3,1,0], backgroundColor:palette[3]},
+  {label:'Review', data:[3,0,0], backgroundColor:palette[2]},
+  {label:'Normal', data:[2,1,1], backgroundColor:palette[1]},
+]}, options:{scales:{x:{stacked:true, grid:{display:false}}, y:{stacked:true, grid, ticks:{stepSize:1}}}}});
+</script>
+</body>
+</html>

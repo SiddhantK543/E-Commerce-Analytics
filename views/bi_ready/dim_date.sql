@@ -1,0 +1,9 @@
+-- BI-ready dimension: dim_date
+-- This is NOT a view -- it is the physical table created by
+-- sql/date_dimension/create_dim_date.sql. It is referenced here only
+-- so this folder's file listing matches the full set of dimensions/
+-- facts Power BI will connect to (see docs/architecture.md).
+--
+-- Run sql/date_dimension/create_dim_date.sql before any other view in
+-- this folder, since fact_orders, fact_order_items, and
+-- transaction_health all join against dim_date.

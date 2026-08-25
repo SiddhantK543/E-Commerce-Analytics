@@ -1,0 +1,32 @@
+# Raw / large data (see data/README.md for how to obtain it)
+data/raw/
+data/exports/
+data/figures/
+*.csv
+!data/sample/*.csv
+*.sql.gz
+!schema/*.sql
+!queries/*.sql
+!sql/**/*.sql
+!views/**/*.sql
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Power BI (binary files should not be diffed/tracked casually)
+*.pbix
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Environment
+.env

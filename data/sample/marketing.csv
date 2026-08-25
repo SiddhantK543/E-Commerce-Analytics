@@ -1,0 +1,11 @@
+order_id,coupon_used,coupon_code,campaign_source,traffic_source
+O001,Yes,SAVE10,Email,Direct
+O002,No,,Social,Facebook
+O003,Yes,SUMMER5,Search,Google
+O004,No,,Direct,Direct
+O005,Yes,WELCOME15,Email,Email
+O006,No,,Social,Instagram
+O007,Yes,WINTER20,Search,Google
+O008,No,,Direct,Direct
+O009,Yes,NEWYEAR,Email,Email
+O010,No,,Social,Facebook

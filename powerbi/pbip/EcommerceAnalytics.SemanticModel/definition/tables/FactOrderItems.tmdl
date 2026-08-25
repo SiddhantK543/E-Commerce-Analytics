@@ -1,0 +1,122 @@
+table FactOrderItems
+	lineageTag: e03320b1-36cf-4762-99e5-b94831485786
+
+	column order_id
+		dataType: string
+		lineageTag: d450601c-dbb5-46d1-93b6-efbac007a58e
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+	column product_id
+		dataType: string
+		lineageTag: a4d31e32-dbf8-4cf7-be82-d01fb879a702
+		isHidden
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+	column customer_id
+		dataType: string
+		lineageTag: 9f65a0ff-a910-4f79-a7d9-81eae2bc1f80
+		isHidden
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+	column order_date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 9f3fe52d-1042-4c32-a8b0-44c0d9d54bf0
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+	column quantity
+		dataType: int64
+		lineageTag: ec0a247c-094e-4745-a962-485dd2e98618
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+	column unit_price_usd
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: ea837362-3ec6-4c0c-afd7-4ca634afa143
+		summarizeBy: average
+		sourceColumn: unit_price_usd
+
+		annotation SummarizationSetBy = Automatic
+	column discount_percent
+		dataType: double
+		formatString: 0.0
+		lineageTag: 5bfe9915-846e-4e76-ae3a-9ca7cf664edf
+		summarizeBy: average
+		sourceColumn: discount_percent
+
+		annotation SummarizationSetBy = Automatic
+	column discount_amount_usd
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: ea2b1d2f-d471-4638-a922-f52ea8a8b63b
+		summarizeBy: sum
+		sourceColumn: discount_amount_usd
+
+		annotation SummarizationSetBy = Automatic
+	column total_price_usd
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: 87b2c3c1-e5c7-44d8-9e90-899191f60270
+		summarizeBy: sum
+		sourceColumn: total_price_usd
+
+		annotation SummarizationSetBy = Automatic
+	column cost_usd
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: b4b12708-7062-4667-835e-ecfac2c0d89b
+		summarizeBy: sum
+		sourceColumn: cost_usd
+
+		annotation SummarizationSetBy = Automatic
+	column profit_usd
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: 9869ae53-d223-4f14-8949-b32c40f2b4d9
+		summarizeBy: sum
+		sourceColumn: profit_usd
+
+		annotation SummarizationSetBy = Automatic
+	column tax_usd
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: 30b2dbff-3623-4f6f-8dc7-02a5c0d67cbd
+		summarizeBy: sum
+		sourceColumn: tax_usd
+
+		annotation SummarizationSetBy = Automatic
+	column profit_margin_percent
+		dataType: double
+		formatString: 0.0
+		lineageTag: d2fba0cb-dedd-4a32-af98-5d930e428468
+		summarizeBy: average
+		sourceColumn: profit_margin_percent
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Grain: one row per (order_id, product_id) line item -- the true transactional revenue
+	/// fact. [Total Revenue] and all Product measures are computed from THIS table.
+	/// order_id/product_id/customer_id/order_date are hidden -- they're relationship keys,
+	/// not report-facing fields (use DimProduct/DimCustomer/DimDate attributes instead).
+
+	partition FactOrderItems = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(DataFolderPath & "\bi_order_items.csv"),[Delimiter=",", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+			    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+			    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"order_id", type text}, {"product_id", type text}, {"customer_id", type text}, {"order_date", type date}, {"quantity", Int64.Type}, {"unit_price_usd", type number}, {"discount_percent", type number}, {"discount_amount_usd", type number}, {"total_price_usd", type number}, {"cost_usd", type number}, {"profit_usd", type number}, {"tax_usd", type number}, {"profit_margin_percent", type number}})
+			in
+			    #"Changed Type"

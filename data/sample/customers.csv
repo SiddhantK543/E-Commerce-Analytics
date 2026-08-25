@@ -1,0 +1,6 @@
+customer_id,customer_name,email,gender,age,country,city,customer_segment,loyalty_score,account_creation_date
+C001,Alice Smith,alice@example.com,Female,34,USA,New York,VIP,88.5,2023-01-15
+C002,Bob Jones,bob@example.com,Male,45,USA,Chicago,Regular,55.2,2023-03-20
+C003,Carla Diaz,carla@example.com,Female,29,Mexico,Mexico City,Premium,72.1,2023-06-10
+C004,David Lee,david@example.com,Male,52,Canada,Toronto,Regular,40.0,2024-01-05
+C005,Eva Brown,eva@example.com,Female,38,USA,Boston,VIP,95.0,2022-11-01

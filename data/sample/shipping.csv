@@ -1,0 +1,12 @@
+order_id,shipping_method,shipping_cost_usd,delivery_days,warehouse,shipping_status
+O001,Standard,5.99,7,WH-East,Delivered
+O002,Economy,2.99,10,WH-East,Delivered
+O003,Express,15.99,3,WH-West,Delivered
+O004,Next Day,25.00,1,WH-West,Cancelled
+O005,Standard,5.99,6,WH-Central,Delivered
+O006,Economy,2.99,9,WH-East,Delivered
+O007,Standard,5.99,7,WH-West,Delivered
+O008,Express,15.99,2,WH-Central,Delivered
+O009,Standard,5.99,8,WH-East,Delivered
+O010,Next Day,25.00,1,WH-Central,Delivered
+O011,Standard,5.99,7,WH-East,Delivered

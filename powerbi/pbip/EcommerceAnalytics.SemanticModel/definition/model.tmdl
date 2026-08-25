@@ -1,0 +1,32 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["DataFolderPath","DimCustomer","DimProduct","DimDate","DimPaymentMethod","FactOrders","FactOrderItems","FactRisk"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+ref table DimCustomer
+ref table DimProduct
+ref table DimDate
+ref table DimPaymentMethod
+ref table FactOrders
+ref table FactOrderItems
+ref table FactRisk
+ref table _Measures
+
+ref relationship 67fb3d66-998e-4f73-96bb-9a71d752fc47
+ref relationship 0f678b03-0923-4d3e-a9f6-94e04ff315f9
+ref relationship 08143628-6fa6-4c8a-b843-615ab21d58ea
+ref relationship 8352cd0f-141e-415b-abb0-c55105a70520
+ref relationship dfbc97bc-3e0d-4885-be15-8162b2a3f20a
+ref relationship 5a7bbec9-cccf-424e-8b2d-17e142fbb6b8
+ref relationship 4dbc985c-b8ee-45a4-8a87-8e120abaf41d
+
+ref expression DataFolderPath
+
+ref cultureInfo en-US

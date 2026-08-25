@@ -1,0 +1,22 @@
+table DimPaymentMethod
+	lineageTag: 604e68dd-a4c6-4324-b017-8070944ccd0c
+
+	column payment_method
+		isKey
+		dataType: string
+		lineageTag: f82391b4-f2a8-47e0-817e-d0ef26120fdf
+		summarizeBy: none
+		sourceColumn: payment_method
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimPaymentMethod = m
+		mode: import
+		source =
+			let
+			    Source = FactOrders,
+			    #"Selected Column" = Table.SelectColumns(Source,{"payment_method"}),
+			    #"Removed Duplicates" = Table.Distinct(#"Selected Column"),
+			    #"Removed Blank Rows" = Table.SelectRows(#"Removed Duplicates", each [payment_method] <> null and [payment_method] <> "")
+			in
+			    #"Removed Blank Rows"

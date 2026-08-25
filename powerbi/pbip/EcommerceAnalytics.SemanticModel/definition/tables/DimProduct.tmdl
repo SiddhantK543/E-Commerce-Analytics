@@ -1,0 +1,62 @@
+table DimProduct
+	lineageTag: 930f8edf-807c-40f2-afd3-032ad3b7f7c4
+
+	column product_id
+		isKey
+		dataType: string
+		lineageTag: f405ea9d-ad3f-4355-9c58-25ebe378e5bb
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+	column product_name
+		dataType: string
+		lineageTag: 90890979-0562-4e41-a471-57132414b2d0
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+	column category
+		dataType: string
+		lineageTag: 891ac2e3-d9c5-40d4-afcc-8dfe05a9cee5
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+	column brand
+		dataType: string
+		lineageTag: eb95fb9f-d540-49f6-ac93-fa1eb19d342e
+		summarizeBy: none
+		sourceColumn: brand
+
+		annotation SummarizationSetBy = Automatic
+	column product_rating_avg
+		dataType: double
+		formatString: 0.0
+		lineageTag: 54d51b42-6abc-42c3-a59f-ed506300e540
+		summarizeBy: average
+		sourceColumn: product_rating_avg
+
+		annotation SummarizationSetBy = Automatic
+	column stock_quantity
+		dataType: int64
+		lineageTag: 23a3de9b-1364-44cf-a266-bd110bf78522
+		summarizeBy: sum
+		sourceColumn: stock_quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	/// NOTE: units_sold / product_revenue / product_profit / line_items_sold are intentionally
+	/// removed in Power Query (see docs/powerbi_data_model.md sec 2.3) -- those are computed live
+	/// as DAX measures against FactOrderItems instead, so they respect report filter context.
+
+	partition DimProduct = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(DataFolderPath & "\bi_product_performance.csv"),[Delimiter=",", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+			    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+			    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"product_id", type text}, {"product_name", type text}, {"category", type text}, {"brand", type text}, {"product_rating_avg", type number}, {"stock_quantity", Int64.Type}, {"units_sold", Int64.Type}, {"product_revenue", type number}, {"product_profit", type number}, {"line_items_sold", Int64.Type}})
+			#"Removed Aggregate Columns" = Table.RemoveColumns(#"Changed Type",{"units_sold", "product_revenue", "product_profit", "line_items_sold"})
+			in
+			    #"Removed Aggregate Columns"

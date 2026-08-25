@@ -1,0 +1,11 @@
+order_id,device_type,session_duration_minutes,pages_visited,abandoned_cart_before
+O001,Mobile,12.5,8,No
+O002,Desktop,20.1,15,Yes
+O003,Mobile,5.0,3,No
+O004,Tablet,30.0,25,Yes
+O005,Desktop,8.2,6,No
+O006,Mobile,15.0,10,No
+O007,Desktop,22.0,18,Yes
+O008,Mobile,7.5,5,No
+O009,Tablet,9.9,7,No
+O010,Desktop,11.1,9,No

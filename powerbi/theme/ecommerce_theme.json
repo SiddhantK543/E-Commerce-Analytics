@@ -1,0 +1,160 @@
+{
+  "name": "Ecommerce Transaction Analytics",
+  "dataColors": [
+    "#2C6E91",
+    "#63A375",
+    "#D98E04",
+    "#B5495B",
+    "#6C5B7B",
+    "#8C8C8C",
+    "#1F4E5F",
+    "#A8C4D4"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#333333",
+  "tableAccent": "#2C6E91",
+  "good": "#63A375",
+  "neutral": "#D98E04",
+  "bad": "#B5495B",
+  "maximum": "#2C6E91",
+  "center": "#D98E04",
+  "minimum": "#F2EAD3",
+  "null": "#C7C7C7",
+  "textClasses": {
+    "callout": {
+      "fontSize": 32,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#2C6E91"
+    },
+    "title": {
+      "fontSize": 14,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#333333"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#333333"
+    },
+    "label": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI",
+      "color": "#333333"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "properties": {
+              "color": { "solid": { "color": "#FFFFFF" } },
+              "transparency": 0
+            }
+          }
+        ],
+        "border": [
+          {
+            "properties": {
+              "show": true,
+              "color": { "solid": { "color": "#E5E5E5" } },
+              "radius": 4
+            }
+          }
+        ],
+        "outspacePane": [
+          {
+            "properties": {
+              "backgroundColor": { "solid": { "color": "#FAFAFA" } }
+            }
+          }
+        ],
+        "title": [
+          {
+            "properties": {
+              "fontSize": 12,
+              "fontFamily": "Segoe UI Semibold",
+              "titleColor": { "solid": { "color": "#333333" } },
+              "alignment": "left"
+            }
+          }
+        ],
+        "categoryAxis": [
+          {
+            "properties": {
+              "fontSize": 9,
+              "color": { "solid": { "color": "#666666" } },
+              "gridlineColor": { "solid": { "color": "#F0F0F0" } }
+            }
+          }
+        ],
+        "valueAxis": [
+          {
+            "properties": {
+              "fontSize": 9,
+              "color": { "solid": { "color": "#666666" } },
+              "gridlineColor": { "solid": { "color": "#F0F0F0" } }
+            }
+          }
+        ],
+        "legend": [
+          {
+            "properties": {
+              "fontSize": 9,
+              "labelColor": { "solid": { "color": "#333333" } },
+              "position": "Top"
+            }
+          }
+        ],
+        "dataPoint": [
+          {
+            "properties": {
+              "defaultColor": { "solid": { "color": "#2C6E91" } }
+            }
+          }
+        ]
+      }
+    },
+    "card": {
+      "*": {
+        "labels": [
+          {
+            "properties": {
+              "color": { "solid": { "color": "#2C6E91" } },
+              "fontSize": 28,
+              "fontFamily": "Segoe UI Semibold"
+            }
+          }
+        ],
+        "categoryLabels": [
+          {
+            "properties": {
+              "color": { "solid": { "color": "#666666" } },
+              "fontSize": 11,
+              "fontFamily": "Segoe UI"
+            }
+          }
+        ]
+      }
+    },
+    "slicer": {
+      "*": {
+        "background": [
+          {
+            "properties": {
+              "color": { "solid": { "color": "#FAFAFA" } }
+            }
+          }
+        ],
+        "items": [
+          {
+            "properties": {
+              "fontColor": { "solid": { "color": "#333333" } },
+              "fontSize": 10
+            }
+          }
+        ]
+      }
+    }
+  }
+}

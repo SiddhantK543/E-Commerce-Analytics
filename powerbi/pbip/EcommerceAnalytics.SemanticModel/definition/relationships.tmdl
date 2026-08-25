@@ -1,0 +1,36 @@
+relationship 67fb3d66-998e-4f73-96bb-9a71d752fc47
+	/// DimCustomer -> FactOrders (one customer : many orders)
+	fromColumn: FactOrders.customer_id
+	toColumn: DimCustomer.customer_id
+
+relationship 0f678b03-0923-4d3e-a9f6-94e04ff315f9
+	/// DimCustomer -> FactOrderItems directly (NOT routed through FactOrders -- see model design sec 3)
+	fromColumn: FactOrderItems.customer_id
+	toColumn: DimCustomer.customer_id
+
+relationship 08143628-6fa6-4c8a-b843-615ab21d58ea
+	/// DimDate -> FactOrders
+	fromColumn: FactOrders.order_date
+	toColumn: DimDate.date_key
+
+relationship 8352cd0f-141e-415b-abb0-c55105a70520
+	/// DimDate -> FactOrderItems (independent relationship, not via FactOrders)
+	fromColumn: FactOrderItems.order_date
+	toColumn: DimDate.date_key
+
+relationship dfbc97bc-3e0d-4885-be15-8162b2a3f20a
+	/// DimProduct -> FactOrderItems
+	fromColumn: FactOrderItems.product_id
+	toColumn: DimProduct.product_id
+
+relationship 5a7bbec9-cccf-424e-8b2d-17e142fbb6b8
+	/// DimPaymentMethod -> FactOrders
+	fromColumn: FactOrders.payment_method
+	toColumn: DimPaymentMethod.payment_method
+
+relationship 4dbc985c-b8ee-45a4-8a87-8e120abaf41d
+	/// FactOrders <-> FactRisk, 1:1 bidirectional -- safe per docs/powerbi_data_model.md sec 3 (no other relationship path connects these two tables). Deliberately NOT related: FactOrders <-> FactOrderItems (different grain -- see same doc for the double-counting risk this avoids).
+	fromCardinality: one
+	crossFilteringBehavior: bothDirections
+	fromColumn: FactRisk.order_id
+	toColumn: FactOrders.order_id

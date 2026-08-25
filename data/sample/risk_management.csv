@@ -1,0 +1,12 @@
+order_id,fraud_risk_score,order_priority,support_tickets
+O001,12.50,Low,0
+O002,45.00,Medium,1
+O003,88.20,High,3
+O004,5.00,Low,0
+O005,30.00,Low,0
+O006,60.50,Medium,1
+O007,92.10,High,2
+O008,10.00,Low,0
+O009,20.00,Low,0
+O010,15.00,Low,0
+O011,12.50,Low,0

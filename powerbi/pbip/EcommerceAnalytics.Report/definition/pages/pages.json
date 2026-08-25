@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pages/2.0.0/schema.json",
+  "pageOrder": [
+    "ExecutiveOverview",
+    "TransactionPaymentHealth",
+    "CustomerAnalytics",
+    "ProductRevenue",
+    "RiskAnomalies"
+  ],
+  "activePageName": "ExecutiveOverview"
+}

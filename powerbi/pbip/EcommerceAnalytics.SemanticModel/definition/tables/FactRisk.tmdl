@@ -1,0 +1,106 @@
+table FactRisk
+	lineageTag: aac7e900-9f5f-42c4-b504-77e031f6e6e3
+
+	column order_id
+		isKey
+		dataType: string
+		lineageTag: e74fd0e6-2434-4966-8138-dc1309f8f959
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+	column customer_id
+		dataType: string
+		lineageTag: a7d205b2-d5b1-46bd-99c7-ef1996c86469
+		isHidden
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+	column order_value
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: 3623e12c-3902-4bfe-a77f-6cf2faed58f6
+		isHidden
+		summarizeBy: sum
+		sourceColumn: order_value
+
+		annotation SummarizationSetBy = Automatic
+	column fraud_risk_score
+		dataType: double
+		formatString: 0.0
+		lineageTag: 5948c038-fe81-4191-9a09-87331cff3231
+		summarizeBy: average
+		sourceColumn: fraud_risk_score
+
+		annotation SummarizationSetBy = Automatic
+	column unusually_high_value
+		dataType: boolean
+		lineageTag: f959cb93-9496-4488-8777-340d31fbf9c6
+		summarizeBy: none
+		sourceColumn: unusually_high_value
+
+		annotation SummarizationSetBy = Automatic
+	column repeated_failed_payment
+		dataType: boolean
+		lineageTag: 0d1c6130-7090-4cd0-8a24-e0c5ee929ebf
+		summarizeBy: none
+		sourceColumn: repeated_failed_payment
+
+		annotation SummarizationSetBy = Automatic
+	column possible_duplicate_flag
+		dataType: boolean
+		lineageTag: dbe22fa9-c075-40c7-9631-81d556624aaa
+		summarizeBy: none
+		sourceColumn: possible_duplicate_flag
+
+		annotation SummarizationSetBy = Automatic
+	column high_fraud_score
+		dataType: boolean
+		lineageTag: a13ffb3d-5b6a-48ff-afc1-23edf762d0a0
+		summarizeBy: none
+		sourceColumn: high_fraud_score
+
+		annotation SummarizationSetBy = Automatic
+	column returned_or_cancelled
+		dataType: boolean
+		lineageTag: 24311b77-d52f-41fe-aa43-5c79f4cf5eb2
+		summarizeBy: none
+		sourceColumn: returned_or_cancelled
+
+		annotation SummarizationSetBy = Automatic
+	column same_day_multi_order
+		dataType: boolean
+		lineageTag: b7f87e1e-0ed9-44d2-aafc-1f8d0123fa4f
+		summarizeBy: none
+		sourceColumn: same_day_multi_order
+
+		annotation SummarizationSetBy = Automatic
+	column signals_triggered
+		dataType: int64
+		lineageTag: 31c7199f-46fa-4d4b-9b4f-339287ec3b04
+		summarizeBy: average
+		sourceColumn: signals_triggered
+
+		annotation SummarizationSetBy = Automatic
+	column transaction_risk_flag
+		dataType: string
+		lineageTag: 3941a7d3-fb99-428a-a1f8-4d8df9ba9b08
+		summarizeBy: none
+		sourceColumn: transaction_risk_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Grain: one row per order's rule-based risk assessment (NOT a fraud-detection model --
+	/// see docs/business_definitions.md). order_value here is hidden/redundant with
+	/// FactOrders[order_value]; kept only because it's in the source export.
+
+	partition FactRisk = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(DataFolderPath & "\bi_risk_analysis.csv"),[Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+			    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+			    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"order_id", type text}, {"customer_id", type text}, {"order_value", type number}, {"fraud_risk_score", type number}, {"unusually_high_value", type logical}, {"repeated_failed_payment", type logical}, {"possible_duplicate_flag", type logical}, {"high_fraud_score", type logical}, {"returned_or_cancelled", type logical}, {"same_day_multi_order", type logical}, {"signals_triggered", Int64.Type}, {"transaction_risk_flag", type text}})
+			in
+			    #"Changed Type"

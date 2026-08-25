@@ -1,0 +1,133 @@
+table FactOrders
+	lineageTag: 7dbb583c-0ca5-4f06-a626-e3da9796e616
+
+	column order_id
+		isKey
+		dataType: string
+		lineageTag: ad3fb8e7-d310-4032-8bb2-52ae750f96f2
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+	column customer_id
+		dataType: string
+		lineageTag: 8c7ffc07-9c58-407b-a96f-fd49b080a3de
+		isHidden
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+	column order_year
+		dataType: int64
+		lineageTag: 18efd5f9-1947-4fbb-b0f6-ff322b590970
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_year
+
+		annotation SummarizationSetBy = Automatic
+	column order_month
+		dataType: int64
+		lineageTag: d918657a-edc0-4f8f-bc9e-f68ab00da019
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_month
+
+		annotation SummarizationSetBy = Automatic
+	column order_day
+		dataType: int64
+		lineageTag: f2ded553-d57f-4d81-9998-6f4c989f11df
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_day
+
+		annotation SummarizationSetBy = Automatic
+	column order_status
+		dataType: string
+		lineageTag: dabe2aa4-51af-4ed8-a69c-efaa1e461bc1
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+	column return_reason
+		dataType: string
+		lineageTag: aae9e8f8-a46d-4abe-a74c-3dd57002697b
+		summarizeBy: none
+		sourceColumn: return_reason
+
+		annotation SummarizationSetBy = Automatic
+	column order_date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 8d2d8ae6-f4ca-42f3-b293-1eb11b2d96e1
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+	column order_value
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: 784d41e0-701b-4ff4-ac4e-e228be5c5742
+		summarizeBy: sum
+		sourceColumn: order_value
+
+		annotation SummarizationSetBy = Automatic
+	column payment_status
+		dataType: string
+		lineageTag: d2c74827-cc82-4e4a-a1a5-8892de02d426
+		summarizeBy: none
+		sourceColumn: payment_status
+
+		annotation SummarizationSetBy = Automatic
+	column payment_method
+		dataType: string
+		lineageTag: 2ab1902e-e2fe-4dfd-94cb-7e865bb98b43
+		summarizeBy: none
+		sourceColumn: payment_method
+
+		annotation SummarizationSetBy = Automatic
+	column transaction_status
+		dataType: string
+		lineageTag: 76db5f79-2fbf-41d1-9a6b-d7ce1d10b48d
+		summarizeBy: none
+		sourceColumn: transaction_status
+
+		annotation SummarizationSetBy = Automatic
+	column successful_value
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: 2e014ea9-c6c4-4d78-8706-cbd74c0e059a
+		summarizeBy: sum
+		sourceColumn: successful_value
+
+		annotation SummarizationSetBy = Automatic
+	column affected_order_value
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: 6c5e5f9e-d4c0-4a4e-8a6c-3f718de6a685
+		summarizeBy: sum
+		sourceColumn: affected_order_value
+
+		annotation SummarizationSetBy = Automatic
+	column potential_lost_value
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: d6ca9e7c-5126-4616-9348-f0ec68bd7473
+		summarizeBy: sum
+		sourceColumn: potential_lost_value
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Grain: one row per order. Deliberately NOT related to FactOrderItems (different grain) --
+	/// see docs/powerbi_data_model.md sec 3 for the double-counting risk this avoids.
+	/// customer_id/order_year/month/day are hidden -- customer_id is only needed for the
+	/// DimCustomer relationship, and order_year/month/day are superseded by order_date + DimDate.
+
+	partition FactOrders = m
+		mode: import
+		source =
+			let
+			    Source = Csv.Document(File.Contents(DataFolderPath & "\bi_transaction_health.csv"),[Delimiter=",", Columns=15, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+			    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+			    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"order_id", type text}, {"customer_id", type text}, {"order_year", Int64.Type}, {"order_month", Int64.Type}, {"order_day", Int64.Type}, {"order_status", type text}, {"return_reason", type text}, {"order_date", type date}, {"order_value", type number}, {"payment_status", type text}, {"payment_method", type text}, {"transaction_status", type text}, {"successful_value", type number}, {"affected_order_value", type number}, {"potential_lost_value", type number}})
+			in
+			    #"Changed Type"

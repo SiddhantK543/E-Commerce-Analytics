@@ -1,0 +1,191 @@
+table DimCustomer
+	lineageTag: f27d3686-6707-40f2-8100-aa1e9f08fb8d
+
+	column customer_id
+		isKey
+		dataType: string
+		lineageTag: 0fd6fd63-dcbf-4ce0-bba1-71c9cfb82c22
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+	column customer_name
+		dataType: string
+		lineageTag: e300c285-2b46-40c0-b69a-3b76e0e9b8d1
+		summarizeBy: none
+		sourceColumn: customer_name
+
+		annotation SummarizationSetBy = Automatic
+	column email
+		dataType: string
+		lineageTag: 4a3d0169-3708-4116-87df-5f672a3f2041
+		summarizeBy: none
+		sourceColumn: email
+
+		annotation SummarizationSetBy = Automatic
+	column gender
+		dataType: string
+		lineageTag: 8237ad96-9829-4230-8af7-f6359eff4cf7
+		summarizeBy: none
+		sourceColumn: gender
+
+		annotation SummarizationSetBy = Automatic
+	column age
+		dataType: int64
+		lineageTag: 6c690efd-9912-452e-bb41-a782bf4afec0
+		summarizeBy: average
+		sourceColumn: age
+
+		annotation SummarizationSetBy = Automatic
+	column country
+		dataType: string
+		lineageTag: 86aa45ed-3602-4f78-bf26-7ef7de2d7d4f
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+	column city
+		dataType: string
+		lineageTag: 0afcd987-01ff-4a14-b909-c930e933664e
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+	column customer_segment
+		dataType: string
+		lineageTag: 26d2f611-d4fb-44b5-865f-3f79ea743ed3
+		summarizeBy: none
+		sourceColumn: customer_segment
+
+		annotation SummarizationSetBy = Automatic
+	column loyalty_score
+		dataType: double
+		formatString: 0.0
+		lineageTag: 0f94882a-703b-4caf-83cb-954fe1eb8d6f
+		summarizeBy: average
+		sourceColumn: loyalty_score
+
+		annotation SummarizationSetBy = Automatic
+	column account_creation_date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 17beae40-d504-41d1-9574-6a5262dafb4b
+		summarizeBy: none
+		sourceColumn: account_creation_date
+
+		annotation SummarizationSetBy = Automatic
+	column last_order_date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 471c2bda-c6c3-4a5f-b689-e8f24ddb8b7d
+		summarizeBy: none
+		sourceColumn: last_order_date
+
+		annotation SummarizationSetBy = Automatic
+	column months_since_last_order
+		dataType: double
+		formatString: 0.0
+		lineageTag: 37a4e487-2238-439f-a3e7-0f794dc00408
+		summarizeBy: average
+		sourceColumn: months_since_last_order
+
+		annotation SummarizationSetBy = Automatic
+	column is_churned
+		dataType: boolean
+		lineageTag: ae580467-d84f-4656-bc51-c5e1ebd2105d
+		summarizeBy: none
+		sourceColumn: is_churned
+
+		annotation SummarizationSetBy = Automatic
+	column recency_days
+		dataType: int64
+		lineageTag: 8c02219c-be08-4e5d-a9f6-1fba215a5320
+		summarizeBy: average
+		sourceColumn: recency_days
+
+		annotation SummarizationSetBy = Automatic
+	column frequency
+		dataType: int64
+		lineageTag: 9ddc4885-6425-4a06-8e78-863fd7def95e
+		summarizeBy: average
+		sourceColumn: frequency
+
+		annotation SummarizationSetBy = Automatic
+	column monetary
+		dataType: double
+		formatString: \$#,##0.00
+		lineageTag: 480aa821-c394-4a62-a7be-29d821a9416a
+		summarizeBy: sum
+		sourceColumn: monetary
+
+		annotation SummarizationSetBy = Automatic
+	column recency_score
+		dataType: int64
+		lineageTag: 0ec05877-ac87-499d-9394-aa2ea7eafd1b
+		summarizeBy: average
+		sourceColumn: recency_score
+
+		annotation SummarizationSetBy = Automatic
+	column frequency_score
+		dataType: int64
+		lineageTag: 9fe13be7-39c6-40b8-a07c-a0eae518739d
+		summarizeBy: average
+		sourceColumn: frequency_score
+
+		annotation SummarizationSetBy = Automatic
+	column monetary_score
+		dataType: int64
+		lineageTag: 57339a8e-1fb9-4f0e-a000-1a2bc94491b2
+		summarizeBy: average
+		sourceColumn: monetary_score
+
+		annotation SummarizationSetBy = Automatic
+	column rfm_total_score
+		dataType: int64
+		lineageTag: 36027810-4444-455f-b447-7adcfa817786
+		summarizeBy: average
+		sourceColumn: rfm_total_score
+
+		annotation SummarizationSetBy = Automatic
+	column rfm_segment
+		dataType: string
+		lineageTag: 7ca2a15e-d83e-4204-bac4-3d8ea046890c
+		summarizeBy: none
+		sourceColumn: rfm_segment
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Merged from bi_customer_churn.csv + bi_customer_rfm.csv on customer_id in Power Query
+	/// (see docs/powerbi_data_model.md sec 2.1). Both are current-snapshot exports from
+	/// python/export_bi_data.py -- not a time series.
+
+	partition DimCustomer = m
+		mode: import
+		source =
+			let
+			    Churn = Csv.Document(File.Contents(DataFolderPath & "\bi_customer_churn.csv"),[Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+			    #"Promoted Headers1" = Table.PromoteHeaders(Churn, [PromoteAllScalars=true]),
+			    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers1",{
+			        {"customer_id", type text}, {"customer_name", type text}, {"email", type text},
+			        {"gender", type text}, {"age", Int64.Type}, {"country", type text}, {"city", type text},
+			        {"customer_segment", type text}, {"loyalty_score", type number},
+			        {"account_creation_date", type date}, {"last_order_date", type date},
+			        {"months_since_last_order", type number}, {"is_churned", type logical},
+			        {"latest_order_date", type date}
+			    }),
+			    #"Removed Columns1" = Table.RemoveColumns(#"Changed Type1",{"latest_order_date"}),
+
+			    Rfm = Csv.Document(File.Contents(DataFolderPath & "\bi_customer_rfm.csv"),[Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+			    #"Promoted Headers2" = Table.PromoteHeaders(Rfm, [PromoteAllScalars=true]),
+			    #"Changed Type2" = Table.TransformColumnTypes(#"Promoted Headers2",{
+			        {"customer_id", type text}, {"customer_name", type text}, {"customer_segment", type text},
+			        {"last_order_date", type date}, {"recency_days", Int64.Type}, {"frequency", Int64.Type},
+			        {"monetary", type number}, {"recency_score", Int64.Type}, {"frequency_score", Int64.Type},
+			        {"monetary_score", Int64.Type}, {"rfm_total_score", Int64.Type}, {"rfm_segment", type text}
+			    }),
+			    #"Removed Columns2" = Table.RemoveColumns(#"Changed Type2",{"customer_name", "customer_segment", "last_order_date"}),
+
+			    #"Merged Queries" = Table.NestedJoin(#"Removed Columns1", {"customer_id"}, #"Removed Columns2", {"customer_id"}, "RfmData", JoinKind.LeftOuter),
+			    #"Expanded RfmData" = Table.ExpandTableColumn(#"Merged Queries", "RfmData", {"recency_days", "frequency", "monetary", "recency_score", "frequency_score", "monetary_score", "rfm_total_score", "rfm_segment"})
+			in
+			    #"Expanded RfmData"

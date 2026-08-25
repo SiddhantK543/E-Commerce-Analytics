@@ -1,0 +1,18 @@
+# Python dependencies for this project's Python/Pandas analytics layer
+# (python/). Implemented in Phase 5. Only packages actually imported by
+# python/*.py are listed -- nothing speculative or unused.
+
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+
+# Reserved for future use, not currently imported by any module:
+# - scikit-learn: anomaly_detection.py deliberately uses transparent
+#   rule-based + statistical (z-score/IQR) methods only, per the
+#   project's explainability-first constraint -- no ML model is used.
+#   Add scikit-learn only if/when a model-based approach is
+#   deliberately introduced.
+# - psycopg2-binary: data_loader.py's primary path is CSV (per the
+#   Phase 5 spec). config.py exposes an optional
+#   ECOMMERCE_DATABASE_URL for a future live-database loading path --
+#   install psycopg2-binary only if/when that path is implemented.

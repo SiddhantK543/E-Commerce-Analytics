@@ -1,0 +1,24 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/2.0.0/schema.json",
+  "themeCollection": {
+    "customTheme": {
+      "name": "ecommerce_theme",
+      "type": "RegisteredResources",
+      "path": "ecommerce_theme.json"
+    }
+  },
+  "layoutOptimization": "None",
+  "resourcePackages": [
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "type": "CustomTheme",
+          "name": "ecommerce_theme.json",
+          "path": "ecommerce_theme.json"
+        }
+      ]
+    }
+  ]
+}
