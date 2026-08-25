@@ -8,7 +8,7 @@ and a Power BI dashboard.
 > **Project status:** SQL foundation, data-quality layer, BI-ready data
 > model, and the Python/Pandas analytics layer are complete and
 > cross-validated against each other. **The Power BI dashboard is
-> planned but not yet built** — see [Project Status](#-project-status)
+> built** — see [Project Status](#-project-status)
 > below.
 
 ---
